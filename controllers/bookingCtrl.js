@@ -4,9 +4,14 @@ const {
 
 const { request } = require('express')
 
-const save = (req,res) => {
-    const response = saveReserva(req.body)
-    res.json(response)
+const save = async (req,res) => {
+    try{
+          const response = await saveReserva(req.body)
+        res.json(response)
+    }catch(error){
+        console.log(error)
+        res.status(500).send(error)
+    }
 }
 
 module.exports = {

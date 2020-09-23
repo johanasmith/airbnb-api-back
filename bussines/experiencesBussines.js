@@ -1,23 +1,32 @@
-const EXPERIENCES = require('./../repository/experiencesRepository')
+const ExperienceModel = require('../models/experiencesModel')
 
-const findAllExperiences = () =>{   
-    return { experience: EXPERIENCES}
+const findAllExperiences = async () =>{   
+    try{
+        const experiences = await ExperienceModel.find()    
+        return {experiences}
+    }catch(error){
+        throw error
+    }
+    
 }
 
-const findTop5Experiences = () => { 
-    const experiencesSorted = EXPERIENCES.sort((a, b) => {
-        if (a.puntaje < b.puntaje) return 1
-        if (a.puntaje > b.puntaje) return -1
-        return 0 
-    })
-    const top5Experiences = experiencesSorted.slice(0, 5)
-    return { top5: top5Experiences }
+const findTop5Experiences = async () => { 
+    try{
+        const top5 = await ExperienceModel.find().sort({puntaje:'desc'}).limit(5)
+        return {top5}
+    }catch(error){
+        throw error
+    }
 }
 
-const findExperience = (id) => {
-    const experience = EXPERIENCES.find(el => Number(id) === el.id)
-    if(experience === undefined) throw('not found')
-    return {experience} //equivale a {experience:experience}
+const findExperience = async (id) => {
+  try{
+    const experience = await ExperienceModel.findById(id)
+    if(!experience) throw {status: 404, msg: 'Experience not found'}
+    return {experience}
+  }catch(error){
+      throw {status: 500, msg: error}
+  }
 }
 
 module.exports = {
